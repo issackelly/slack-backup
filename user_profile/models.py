@@ -20,19 +20,26 @@ class Team(models.Model):
         url = 'https://slack.com/api/users.list?token=' + self.get_creator().slack_access_token
         r = requests.get(url)
 
-        members = json.loads(r.content)['members']
-        for m in members:
-            user, created = User.objects.get_or_create(slack_id=m['id'], email=m['profile']['email'],
+        try:
+
+            members = json.loads(r.content)['members']
+            for m in members:
+                if m['profile'].get('email'):
+                    user, created = User.objects.get_or_create(slack_id=m['id'], email=m['profile']['email'],
                                                        username=m['profile']['email'][:30])
-            user.slack_team_id = self.slack_id
-            user.slack_username =  m['name']
-            user.slack_avatar =  m['profile'].get('image_24','')
+                else:
+                    user, created = User.objects.get_or_create(slack_id=m['id'], email=m['id'],
+                                                               username=m['id'])
 
-            user.save()
+                user.slack_team_id = self.slack_id
+                user.slack_username =  m['name']
+                user.slack_avatar =  m['profile'].get('image_24','')
 
-
-
-        return User.objects.filter(slack_team_id = self.slack_id)
+                user.save()
+            return User.objects.filter(slack_team_id = self.slack_id)
+        except Exception, exc:
+            print exc
+            import ipdb; ipdb.set_trace()
 
 # Create your models here.
 class User(AbstractUser):
@@ -40,7 +47,7 @@ class User(AbstractUser):
     slack_username = models.CharField(max_length=100, default='')
     slack_avatar = models.CharField(max_length=500, default='')
     slack_team_id = models.CharField(max_length=10, default='')
-    slack_access_token = models.CharField(max_length=50, default='')
+    slack_access_token = models.CharField(max_length=120, default='')
 
     team = models.ForeignKey(Team, null=True)
 

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '=1kp%mj^h4r!$_2vy9@4541)=+mc*3jxmc8lj00pm$$-1$8j*('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = False
 
@@ -59,10 +59,10 @@ WSGI_APPLICATION = 'slackbackup.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
+DATABASES =  {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'FART'
     }
 }
 
@@ -119,18 +119,8 @@ AUTH_USER_MODEL = 'user_profile.User'
 try:
     from settings_local import *
 except ImportError:
-
     pass
 
-
-if DEBUG == False:
-    DATABASES['default'] =  dj_database_url.config()
-    DOMAIN = "http://slackbk.herokuapp.com"
-    SLACK_CLIENT_ID = os.getenv('SLACK_CLIENT_ID', '')
-    SLACK_CLIENT_SECRET =  os.getenv('SLACK_CLIENT_SECRET', '')
-
-    from sendgridify import sendgridify
-    EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT, EMAIL_USE_TLS = sendgridify()
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
@@ -138,4 +128,4 @@ TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
 )
 
-ADMINS = (('Fountainhead', 'hong@vietnamdevelopers.com'))
+ADMINS = (('Issac', 'issac@issackelly.com'))

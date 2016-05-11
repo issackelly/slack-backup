@@ -23,4 +23,14 @@
             </tr>
         {% endfor %}
     </table>
+    <h4>IM</h4>
+    <table class="table table-striped">
+        {% for channel in im %}
+            <tr>
+                <td><a href="/channels/{{ channel.id }}/">
+                    {{ channel.name }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

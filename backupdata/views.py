@@ -17,8 +17,8 @@ def home(request):
 
 @login_required
 def channels(request):
-    channels, groups = crawl_all_channel(request.user)
-    variables = {'channels': channels, 'groups': groups}
+    channels, groups, im = crawl_all_channel(request.user)
+    variables = {'channels': channels, 'groups': groups, 'im': im}
     return render_to_response('channels.html', variables, context_instance=RequestContext(request))
 
 
@@ -26,9 +26,9 @@ def channels(request):
 def channel_detail(request, channel_id):
     channel = Channel.objects.get(id=channel_id)
 
-    channelmember = ChannelMember.objects.filter(channel = channel, user  = request.user)
-    if channelmember.count() == 0:
-        return  HttpResponseRedirect('/')
+    #channelmember = ChannelMember.objects.filter(channel = channel, user  = request.user)
+    #if channelmember.count() == 0:
+    #    return  HttpResponseRedirect('/')
 
     #channel.crawl_history()
     messages = Message.objects.filter(channel=channel).order_by('-ts')
